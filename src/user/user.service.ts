@@ -12,13 +12,28 @@ export class UserService {
     ) {}
     private readonly logger: Logger = new Logger(UserService.name);
 
+    async getUserId(id: number): Promise<User> {
+        try {
+            const col: User = await this.userRepository.findOne({ where: { userId: id }});
+            if (col)
+                return this.omitPassword(col);
+            else
+                throw new NotFoundException(`[ID: '${id}']에 일치하는 계정을 찾을 수 없습니다.`)
+        } catch (err) {
+            if (err.status == 404)
+                throw err;
+            else
+                this.logger.error(err);
+        }
+    }
+
     async getUserEmail(email: string): Promise<User> {
         try {
             const col: User = await this.userRepository.findOne({ where: { email: email }});
             if (col)
                 return this.omitPassword(col);
             else
-                throw new NotFoundException(`'${email}'에 해당하는 계정을 찾을 수 없습니다.`)
+                throw new NotFoundException(`[Email: '${email}']에 일치하는 계정을 찾을 수 없습니다.`)
         } catch (err) {
             if (err.status == 404)
                 throw err;
