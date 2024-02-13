@@ -47,7 +47,8 @@ export class UserService {
     }
 
     async createUser(userDto: CreateUserDto): Promise<User> {
-        if (this.getUserEmailForce(userDto.email))
+        const col = await this.getUserEmailForce(userDto.email);
+        if (col)
             throw new ConflictException('이미 존재하는 계정입니다');
 
         try {
