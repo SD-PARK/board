@@ -1,16 +1,18 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board, ViewBoardList } from './entity/board.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { BoardFilterDto, CreateBoardDto, UpdateBoardDto } from './dto/board.dto';
 import { subDays } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class BoardService {
     constructor(
         @InjectRepository(Board) private readonly boardRepository: Repository<Board>,
         @InjectRepository(ViewBoardList) private readonly viewBoardListRepository: Repository<ViewBoardList>,
+        private readonly categoryService: CategoryService,
         private readonly configService: ConfigService,
     ) {}
     private readonly logger: Logger = new Logger(BoardService.name);
@@ -111,6 +113,9 @@ export class BoardService {
     }
 
     async postBoard(boardDto: CreateBoardDto, userId: number): Promise<Board> {
+        if (!this.categoryService.validateCategory(boardDto.categoryId))
+            throw new BadRequestException('카테고리 ID가 유효하지 않습니다');
+
         try {
             const result: Board = await this.boardRepository.save({
                 ...boardDto,
@@ -118,13 +123,21 @@ export class BoardService {
             });
             return result;
         } catch (err) {
-            this.logger.error('postBoard');
-            throw err;
+            if (err.status === 400) {
+                throw err;
+            } else {
+                this.logger.error('postBoard');
+                throw err;
+            }
         }
     }
 
     async patchBoard(boardDto: UpdateBoardDto, boardId: number, userId: number): Promise<Board> {
         const col: Board = await this.verifyUserOwnership(boardId, userId);
+
+        if (!this.categoryService.validateCategory(boardDto.categoryId))
+            throw new BadRequestException('카테고리 ID가 유효하지 않습니다');
+
         try {
             const result: Board = await this.boardRepository.save({
                 ...col,
@@ -132,8 +145,12 @@ export class BoardService {
             });
             return result;
         } catch (err) {
-            this.logger.error('patchBoard()');
-            throw err;
+            if (err.status === 400) {
+                throw err;
+            } else {
+                this.logger.error('patchBoard()');
+                throw err;
+            }
         }
     }
 
@@ -157,5 +174,15 @@ export class BoardService {
             throw new ForbiddenException('권한이 없습니다');
         else
             return col;
+    }
+
+    /** ID와 일치하는 게시글이 있으면 True, 아니면 False를 반환합니다. */
+    async validateBoard(boardId: number): Promise<Boolean> {
+        const col: Board = await this.boardRepository.findOne({ where: { boardId: boardId }});
+        
+        if (col)
+            return true;
+        else
+            return false;
     }
 }
