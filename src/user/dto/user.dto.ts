@@ -1,8 +1,8 @@
-import { PartialType, PickType } from "@nestjs/mapped-types";
-import { IsString, Length } from "class-validator";
+import { PickType } from "@nestjs/mapped-types";
+import { IsEmail, IsString, Length } from "class-validator";
 
 export class CreateUserDto {
-    @IsString()
+    @IsEmail()
     @Length(1, 255)
     email: string;
 
