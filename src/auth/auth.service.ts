@@ -30,10 +30,12 @@ export class AuthService {
             else
                 return this.userService.omitPassword(user);
         } catch (err) {
-            if (err.status == 403)
+            if (err.status == 403) {
                 throw err;
-            else
-                this.logger.error(err);
+            } else {
+                this.logger.error('validateUser()');
+                throw err;
+            }
         }
     }
 
@@ -84,21 +86,30 @@ export class AuthService {
         try {
             await this.tokenRepository.save(tokenDto);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error('setRefreshToken()');
         }
     }
 
     /** 입력받은 Token과 DB에 저장된 Token의 일치 여부 확인 */
     async matchesRefreshToken(token: string, userId: number): Promise<User>{
-        const col: Token = await this.tokenRepository.findOne({ where: { userId: userId }});
-        if (!col)
-            throw new UnauthorizedException();
-        
-        const isMatches: Boolean = (token == col.token && new Date() < new Date(col.expireIn));
-        if (!isMatches)
-            throw new UnauthorizedException();
-
-        const user: User = await this.userService.getUserId(userId);
-        return this.userService.omitPassword(user);
+        try {
+            const col: Token = await this.tokenRepository.findOne({ where: { userId: userId }});
+            if (!col)
+                throw new UnauthorizedException();
+            
+            const isMatches: Boolean = (token == col.token && new Date() < new Date(col.expireIn));
+            if (!isMatches)
+                throw new UnauthorizedException();
+    
+            const user: User = await this.userService.getUserId(userId);
+            return this.userService.omitPassword(user);
+        } catch (err) {
+            if (err.status == 401) {
+                throw err;
+            } else {
+                this.logger.error('matchesRefreshToken()');
+                throw err;
+            }
+        }
     }
 }

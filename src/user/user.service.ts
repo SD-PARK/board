@@ -20,10 +20,12 @@ export class UserService {
             else
                 throw new NotFoundException(`[ID: '${id}']에 일치하는 계정을 찾을 수 없습니다.`)
         } catch (err) {
-            if (err.status == 404)
+            if (err.status == 404) {
                 throw err;
-            else
-                this.logger.error(err);
+            } else {
+                this.logger.error('getUserId');
+                throw err;
+            }
         }
     }
 
@@ -35,10 +37,12 @@ export class UserService {
             else
                 throw new NotFoundException(`[Email: '${email}']에 일치하는 계정을 찾을 수 없습니다.`)
         } catch (err) {
-            if (err.status == 404)
+            if (err.status == 404) {
                 throw err;
-            else
-                this.logger.error(err);
+            } else {
+                this.logger.error('getUserEmail');
+                throw err;
+            }
         }
     }
 
@@ -48,7 +52,8 @@ export class UserService {
             const result = cols.map(user => this.omitPassword(user));
             return result;
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error('getUserAll()');
+            throw err;
         }
     }
 
@@ -57,7 +62,8 @@ export class UserService {
             const col = await this.userRepository.findOne({ where: { email: email }});
             return col;
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error('getUserEmailForce()');
+            throw err;
         }
     }
 
@@ -74,12 +80,13 @@ export class UserService {
             });
             return this.omitPassword(result);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error('createUser()');
+            throw err;
         }
     }
 
     async patchUser(userEmail: string, userDto: UpdateUserDto): Promise<User> {
-        const col: User = await this.getUserEmailForce(userEmail);
+        const col: User = await this.getUserEmail(userEmail);
         try {
             const saveCol: User = {
                 ...col,
@@ -92,7 +99,8 @@ export class UserService {
             const result: User = await this.userRepository.save(saveCol);
             return this.omitPassword(result);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error('patchUser()');
+            throw err;
         }
     }
 
