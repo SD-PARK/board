@@ -167,6 +167,7 @@ export class BoardService {
         }
     }
 
+    /** 게시글의 변경 권한을 확인 후 해당 게시글을 반환합니다. */
     async verifyUserOwnership(boardId: number, userId: number): Promise<Board> {
         const col: Board = await this.getBoard(boardId);
 
