@@ -41,7 +41,7 @@ export class Board extends BaseEntity {
 }
 
 @ViewEntity({
-    name: 'board_list',
+    name: 'view_board_list',
     expression: `
     SELECT "board"."board_id" as "id", "category"."title" as "category", "user"."name" as "writer", "board"."title" as "title", "board"."regdate" as "regdate", "board"."views" as "views"
     FROM "board" "board"
@@ -50,7 +50,7 @@ export class Board extends BaseEntity {
     WHERE "board"."deletedate" IS NULL
     `
 })
-export class BoardList {
+export class ViewBoardList {
     @ViewColumn()
     id: number;
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { Board, BoardList } from './entity/board.entity';
+import { Board, ViewBoardList } from './entity/board.entity';
 import { BoardFilterDto, CreateBoardDto, UpdateBoardDto } from './dto/board.dto';
 
 @Controller('board')
@@ -16,7 +16,7 @@ export class BoardController {
         @Query('category') category?: string, // 카테고리
         @Query('sort') sort?: string, // 정렬 기준
         @Query('page') page?: number, // 페이지
-    ): Promise<BoardList[]> {
+    ): Promise<ViewBoardList[]> {
         const boardFilterDto: BoardFilterDto = {
             target: target,
             keyword: keyword,

@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Board, BoardList } from './entity/board.entity';
+import { Board, ViewBoardList } from './entity/board.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { BoardFilterDto, CreateBoardDto, UpdateBoardDto } from './dto/board.dto';
 import { subDays } from 'date-fns';
@@ -10,60 +10,60 @@ import { ConfigService } from '@nestjs/config';
 export class BoardService {
     constructor(
         @InjectRepository(Board) private readonly boardRepository: Repository<Board>,
-        @InjectRepository(BoardList) private readonly boardListRepository: Repository<BoardList>,
+        @InjectRepository(ViewBoardList) private readonly viewBoardListRepository: Repository<ViewBoardList>,
         private readonly configService: ConfigService,
     ) {}
     private readonly logger: Logger = new Logger(BoardService.name);
 
-    async getBoardList(boardFilterDto: BoardFilterDto): Promise<BoardList[]> {
+    async getBoardList(boardFilterDto: BoardFilterDto): Promise<ViewBoardList[]> {
         const TARGET_KEY: string[] = this.configService.get('BOARD_TARGET_KEY');
         const PAGE_SIZE: number = this.configService.get('BOARD_PAGE_SIZE');
 
         const { target, keyword, category, sort, page } = boardFilterDto;
         
         try {
-            let queryBuilder: SelectQueryBuilder<BoardList> = this.boardListRepository.createQueryBuilder('board_list');
+            let queryBuilder: SelectQueryBuilder<ViewBoardList> = this.viewBoardListRepository.createQueryBuilder('view_board_list');
     
             // 검색 (제목, 작성자, 전체(Default))
             if (keyword) {
                 if (TARGET_KEY.includes(target))
-                    queryBuilder = queryBuilder.andWhere(`board_list.${target} LIKE :keyword`, { target: target, keyword: `%${keyword}%` });
+                    queryBuilder = queryBuilder.andWhere(`view_board_list.${target} LIKE :keyword`, { target: target, keyword: `%${keyword}%` });
                 else
-                    queryBuilder = queryBuilder.andWhere('board_list.title LIKE :keyword OR board_list.writer LIKE :keyword', { keyword: `%${keyword}%` });
+                    queryBuilder = queryBuilder.andWhere('view_board_list.title LIKE :keyword OR view_board_list.writer LIKE :keyword', { keyword: `%${keyword}%` });
             }
     
             // 카테고리 필터
             if (category) {
-                queryBuilder = queryBuilder.andWhere('board_list.category = :category', { category: category });
+                queryBuilder = queryBuilder.andWhere('view_board_list.category = :category', { category: category });
             }
     
             // 정렬(조회수, 조회수(7일), 조회수(1달), 조회수(1년), 작성일자(Default))
             switch (sort) {
                 case 'view':
                     queryBuilder = queryBuilder
-                        .orderBy('board_list.regdate', 'DESC')
-                        .addOrderBy('board_list.views', 'DESC');
+                        .orderBy('view_board_list.regdate', 'DESC')
+                        .addOrderBy('view_board_list.views', 'DESC');
                     break;
                 case 'view7d':
                     queryBuilder = queryBuilder
-                        .andWhere(`board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 7) })
-                        .orderBy('board_list.regdate', 'DESC')
-                        .addOrderBy('board_list.views', 'DESC');
+                        .andWhere(`view_board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 7) })
+                        .orderBy('view_board_list.regdate', 'DESC')
+                        .addOrderBy('view_board_list.views', 'DESC');
                     break;
                 case 'view30d':
                     queryBuilder = queryBuilder
-                        .andWhere(`board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 30) })
-                        .orderBy('board_list.regdate', 'DESC')
-                        .addOrderBy('board_list.views', 'DESC');
+                        .andWhere(`view_board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 30) })
+                        .orderBy('view_board_list.regdate', 'DESC')
+                        .addOrderBy('view_board_list.views', 'DESC');
                     break;
                 case 'view365d':
                     queryBuilder = queryBuilder
-                        .andWhere(`board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 365) })
-                        .orderBy('board_list.regdate', 'DESC')
-                        .addOrderBy('board_list.views', 'DESC');
+                        .andWhere(`view_board_list.regdate >= :daysAgo`, { daysAgo: subDays(new Date(), 365) })
+                        .orderBy('view_board_list.regdate', 'DESC')
+                        .addOrderBy('view_board_list.views', 'DESC');
                     break;
                 default:
-                    queryBuilder = queryBuilder.orderBy('board_list.regdate', 'DESC');
+                    queryBuilder = queryBuilder.orderBy('view_board_list.regdate', 'DESC');
                     break;
             }
             
@@ -72,7 +72,7 @@ export class BoardService {
                 .skip(((page || 1) - 1) * PAGE_SIZE)
                 .take(PAGE_SIZE);
     
-            const cols: BoardList[] = await queryBuilder.getMany();
+            const cols: ViewBoardList[] = await queryBuilder.getMany();
             return cols;
         } catch (err) {
             this.logger.error('getBoardList()');
