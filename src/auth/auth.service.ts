@@ -63,6 +63,7 @@ export class AuthService {
     /** Access Token 생성 */
     createAccessToken(user: User): string {
         return this.jwtService.sign({
+            userId: user.userId,
             email: user.email,
             name: user.name,
         }, {
