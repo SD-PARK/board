@@ -2,7 +2,7 @@ import { ConflictException, Injectable, Logger, NotFoundException } from '@nestj
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -62,7 +62,7 @@ export class UserService {
     }
 
     async createUser(userDto: CreateUserDto): Promise<User> {
-        const col = await this.getUserEmailForce(userDto.email);
+        const col: User = await this.getUserEmailForce(userDto.email);
         if (col)
             throw new ConflictException('이미 존재하는 계정입니다');
 
@@ -72,6 +72,24 @@ export class UserService {
                 ...userDto,
                 password: hashPassword,
             });
+            return this.omitPassword(result);
+        } catch (err) {
+            this.logger.error(err);
+        }
+    }
+
+    async patchUser(userEmail: string, userDto: UpdateUserDto): Promise<User> {
+        const col: User = await this.getUserEmailForce(userEmail);
+        try {
+            const saveCol: User = {
+                ...col,
+                ...userDto,
+            } as User;
+            
+            if (userDto.password)
+                saveCol.password = await bcrypt.hash(userDto.password, 10);
+
+            const result: User = await this.userRepository.save(saveCol);
             return this.omitPassword(result);
         } catch (err) {
             this.logger.error(err);

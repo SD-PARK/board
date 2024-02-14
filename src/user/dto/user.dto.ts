@@ -1,4 +1,4 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsString, Length } from "class-validator";
 
 export class CreateUserDto {
@@ -15,4 +15,4 @@ export class CreateUserDto {
     name: string;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends PickType(CreateUserDto, ['password', 'name']) {}
