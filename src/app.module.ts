@@ -6,12 +6,14 @@ import { ConfigModule } from '@nestjs/config';
 import { configModuleConfig } from './config/config-module.config';
 import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
+import { ReplyModule } from './reply/reply.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(configModuleConfig),
     TypeOrmModule.forRootAsync(typeOrmModuleConfig),
-    UserModule, AuthModule, BoardModule],
+    UserModule, AuthModule, BoardModule, CategoryModule],
   controllers: [],
   providers: [],
 })

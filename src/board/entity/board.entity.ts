@@ -1,4 +1,4 @@
-import { Category } from "src/board/entity/category.entity";
+import { Category } from "src/category/entity/category.entity";
 import { User } from "src/user/entity/user.entity";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, ViewColumn, ViewEntity } from "typeorm";
 
