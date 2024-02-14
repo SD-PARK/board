@@ -30,7 +30,7 @@ export class AuthService {
             else
                 return this.userService.omitPassword(user);
         } catch (err) {
-            if (err.status == 403) {
+            if (err.status === 403) {
                 throw err;
             } else {
                 this.logger.error('validateUser()');
@@ -97,14 +97,14 @@ export class AuthService {
             if (!col)
                 throw new UnauthorizedException();
             
-            const isMatches: Boolean = (token == col.token && new Date() < new Date(col.expireIn));
+            const isMatches: Boolean = (token === col.token && new Date() < new Date(col.expireIn));
             if (!isMatches)
                 throw new UnauthorizedException();
     
             const user: User = await this.userService.getUserId(userId);
             return this.userService.omitPassword(user);
         } catch (err) {
-            if (err.status == 401) {
+            if (err.status === 401) {
                 throw err;
             } else {
                 this.logger.error('matchesRefreshToken()');

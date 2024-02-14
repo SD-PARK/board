@@ -20,7 +20,7 @@ export class UserService {
             else
                 throw new NotFoundException(`[ID: '${id}']에 일치하는 계정을 찾을 수 없습니다.`)
         } catch (err) {
-            if (err.status == 404) {
+            if (err.status === 404) {
                 throw err;
             } else {
                 this.logger.error('getUserId');
@@ -37,7 +37,7 @@ export class UserService {
             else
                 throw new NotFoundException(`[Email: '${email}']에 일치하는 계정을 찾을 수 없습니다.`)
         } catch (err) {
-            if (err.status == 404) {
+            if (err.status === 404) {
                 throw err;
             } else {
                 this.logger.error('getUserEmail');
