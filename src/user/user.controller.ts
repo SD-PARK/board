@@ -22,6 +22,6 @@ export class UserController {
     @Patch()
     @UseGuards(JwtAuthGuard)
     async patchUser(@Req() req, @Body() userDto: UpdateUserDto): Promise<User> {
-        return this.userService.patchUser(req.email, userDto);
+        return this.userService.patchUser(req.user.userId, userDto);
     }
 }

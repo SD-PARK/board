@@ -85,8 +85,8 @@ export class UserService {
         }
     }
 
-    async patchUser(userEmail: string, userDto: UpdateUserDto): Promise<User> {
-        const col: User = await this.getUserEmail(userEmail);
+    async patchUser(userId: number, userDto: UpdateUserDto): Promise<User> {
+        const col: User = await this.getUserId(userId);
         try {
             const saveCol: User = {
                 ...col,
