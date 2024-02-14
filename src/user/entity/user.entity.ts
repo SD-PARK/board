@@ -1,5 +1,6 @@
 import { Token } from "src/auth/entity/token.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Board } from "src/board/entity/board.entity";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -18,6 +19,9 @@ export class User extends BaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     regdate: Date;
 
-    @OneToOne(() => Token, token => token.userId)
+    @OneToOne(() => Token, token => token.user)
     token: Token;
+
+    @OneToMany(() => Board, board => board.categoryId)
+    boards: Board[];
 }
