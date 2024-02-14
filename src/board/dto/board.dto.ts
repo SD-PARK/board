@@ -1,4 +1,4 @@
-import { PartialType, PickType } from "@nestjs/mapped-types";
+import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber, IsString, Length, MinLength } from "class-validator";
 
 export class CreateBoardDto {
