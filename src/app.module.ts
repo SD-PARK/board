@@ -13,7 +13,7 @@ import { CategoryModule } from './category/category.module';
   imports: [
     ConfigModule.forRoot(configModuleConfig),
     TypeOrmModule.forRootAsync(typeOrmModuleConfig),
-    UserModule, AuthModule, BoardModule, CategoryModule],
+    UserModule, AuthModule, BoardModule, ReplyModule, CategoryModule],
   controllers: [],
   providers: [],
 })
