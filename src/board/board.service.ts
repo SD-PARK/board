@@ -135,7 +135,7 @@ export class BoardService {
     async patchBoard(boardDto: UpdateBoardDto, boardId: number, userId: number): Promise<Board> {
         const col: Board = await this.verifyUserOwnership(boardId, userId);
 
-        if (!(await this.categoryService.validateCategory(boardDto.categoryId)))
+        if (boardDto?.categoryId && !(await this.categoryService.validateCategory(boardDto.categoryId)))
             throw new BadRequestException('카테고리 ID가 유효하지 않습니다');
 
         try {
