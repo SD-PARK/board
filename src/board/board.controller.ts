@@ -47,7 +47,7 @@ export class BoardController {
 
     @Delete('/:id')
     @UseGuards(JwtAuthGuard)
-    async deleteBoard(@Req() req, @Param('id') boardId: number) {
-        return await this.boardService.deleteBoard(boardId, req.user.userId);
+    async deleteBoard(@Req() req, @Param('id') boardId: number): Promise<void> {
+        await this.boardService.deleteBoard(boardId, req.user.userId);
     }
 }

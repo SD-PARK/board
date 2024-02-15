@@ -28,7 +28,7 @@ export class ReplyController {
 
     @Delete('/:id')
     @UseGuards(JwtAuthGuard)
-    async deleteReply(@Req() req, @Param('id') replyId: number) {
-        return await this.replyService.deleteReply(replyId, req.user.userId);
+    async deleteReply(@Req() req, @Param('id') replyId: number): Promise<void> {
+        await this.replyService.deleteReply(replyId, req.user.userId);
     }
 }
