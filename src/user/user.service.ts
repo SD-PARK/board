@@ -18,7 +18,7 @@ export class UserService {
             if (col)
                 return this.omitPassword(col);
             else
-                throw new NotFoundException(`[ID: '${id}']에 일치하는 계정을 찾을 수 없습니다.`)
+                throw new NotFoundException(`[ID: '${id}']에 일치하는 계정을 찾을 수 없습니다.`);
         } catch (err) {
             if (err.status === 404) {
                 throw err;
