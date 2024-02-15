@@ -56,12 +56,10 @@ export class ReplyService {
     }
 
     async deleteReply(replyId: number, userId: number): Promise<void> {
-        const col: Reply = await this.verifyUserOwnership(replyId, userId);
+        await this.verifyUserOwnership(replyId, userId);
+
         try {
-            await this.replyRepository.save({
-                ...col,
-                deletedate: new Date(),
-            });
+            await this.replyRepository.softDelete(replyId);
         } catch (err) {
             this.logger.error('deleteReply()');
             throw err;

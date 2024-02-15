@@ -155,12 +155,9 @@ export class BoardService {
     }
 
     async deleteBoard(boardId: number, userId: number): Promise<void> {
-        const col: Board = await this.verifyUserOwnership(boardId, userId);
+        await this.verifyUserOwnership(boardId, userId);
         try {
-            await this.boardRepository.save({
-                ...col,
-                deletedate: new Date(),
-            });
+            await this.boardRepository.softDelete(boardId);
         } catch (err) {
             this.logger.error('deleteBoard()');
             throw err;
