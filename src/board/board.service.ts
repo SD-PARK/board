@@ -29,7 +29,7 @@ export class BoardService {
             // 검색 (제목, 작성자, 전체(Default))
             if (keyword) {
                 if (TARGET_KEY.includes(target))
-                    queryBuilder = queryBuilder.andWhere(`view_board_list.${target} LIKE :keyword`, { target: target, keyword: `%${keyword}%` });
+                    queryBuilder = queryBuilder.andWhere(`view_board_list.${target} LIKE :keyword`, { keyword: `%${keyword}%` });
                 else
                     queryBuilder = queryBuilder.andWhere('view_board_list.title LIKE :keyword OR view_board_list.writer LIKE :keyword', { keyword: `%${keyword}%` });
             }
