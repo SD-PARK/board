@@ -104,6 +104,16 @@ export class UserService {
         }
     }
 
+    async deleteUser(userId: number): Promise<void> {
+        await this.getUserId(userId);
+        try {
+            this.userRepository.softDelete(userId);
+        } catch (err) {
+            this.logger.error('deleteUser()');
+            throw err;
+        }
+    }
+
     /** User 객체에서 Password 속성 제거 후 반환 */
     omitPassword(user: User): User {
         const { password, ...result } = user;
