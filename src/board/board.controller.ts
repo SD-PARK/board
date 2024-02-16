@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Board, ViewBoardList } from './entity/board.entity';
 import { BoardFilterDto, CreateBoardDto, UpdateBoardDto } from './dto/board.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageResponseDto } from './dto/image.dto';
 
 @Controller('board')
 export class BoardController {
@@ -37,6 +39,13 @@ export class BoardController {
     @UseGuards(JwtAuthGuard)
     async postBoard(@Req() req, @Body() boardDto: CreateBoardDto): Promise<Board> {
         return await this.boardService.postBoard(boardDto, req.user.userId);
+    }
+
+    @UseInterceptors(FileInterceptor('file'))
+    @HttpCode(200)
+    @Post('/image')
+    async postSaveImage(@UploadedFile() file: Express.Multer.File): Promise<ImageResponseDto> {
+        return await this.boardService.imageUpload(file);
     }
 
     @Patch('/:id')

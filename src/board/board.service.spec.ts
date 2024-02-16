@@ -5,6 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Board, ViewBoardList } from './entity/board.entity';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { AwsService } from 'src/aws/aws.service';
+import { UtilsService } from 'src/utils/utils.service';
+import { Readable } from 'stream';
 
 describe('BoardService', () => {
   let service: BoardService;
@@ -72,11 +75,17 @@ describe('BoardService', () => {
         return str;
     }),
   }
+  const mockAwsService = {
+    imageUploadToS3: jest.fn(() => 'uri'),
+  }
+  const mockUtilsService = {
+    getUUID: jest.fn(() => '123456789'),
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        BoardService, CategoryService, ConfigService,
+        BoardService, CategoryService, ConfigService, AwsService, UtilsService,
         {
           provide: getRepositoryToken(Board),
           useValue: mockBoardRepository,
@@ -91,6 +100,10 @@ describe('BoardService', () => {
       .useValue(mockCategoryService)
       .overrideProvider(ConfigService)
       .useValue(mockConfigService)
+      .overrideProvider(AwsService)
+      .useValue(mockAwsService)
+      .overrideProvider(UtilsService)
+      .useValue(mockUtilsService)
       .compile();
 
     service = module.get<BoardService>(BoardService);
@@ -234,6 +247,38 @@ describe('BoardService', () => {
     it('Board 레코드에 대해 softDelete를 실행하는가?', async () => {
       await service.deleteBoard(BoardId, userId);
       expect(mockBoardRepository.softDelete).toHaveBeenCalledWith(BoardId);
+    });
+  });
+
+  describe('imageUpload Test', () => {
+    const file: Express.Multer.File = {
+      originalname: 'file.csv',
+      mimetype: 'text/csv',
+      path: 'something',
+      buffer: Buffer.from('one,two,three'),
+      fieldname: '',
+      encoding: '',
+      size: 0,
+      stream: new Readable,
+      destination: '',
+      filename: ''
+    };
+    
+    it('업로드한 이미지의 URI를 반환하는가?', () => {
+      expect(service.imageUpload(file))
+        .resolves.toEqual({ imageUrl: 'uri' });
+    });
+
+    it('UUID를 받아오는가?', () => {
+      expect(mockUtilsService.getUUID).toHaveBeenCalledTimes(1);
+    });
+
+    it('이미지를 업로드 하는가?', () => {
+      expect(mockAwsService.imageUploadToS3).toHaveBeenCalledWith(
+        '123456789.csv',
+        file,
+        'csv',
+      );
     });
   });
 

@@ -8,12 +8,14 @@ import { AuthModule } from './auth/auth.module';
 import { BoardModule } from './board/board.module';
 import { ReplyModule } from './reply/reply.module';
 import { CategoryModule } from './category/category.module';
+import { AwsModule } from './aws/aws.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(configModuleConfig),
     TypeOrmModule.forRootAsync(typeOrmModuleConfig),
-    UserModule, AuthModule, BoardModule, ReplyModule, CategoryModule],
+    UserModule, AuthModule, BoardModule, ReplyModule, CategoryModule, AwsModule, UtilsModule],
   controllers: [],
   providers: [],
 })

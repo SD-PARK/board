@@ -6,6 +6,9 @@ import { BoardFilterDto, CreateBoardDto, UpdateBoardDto } from './dto/board.dto'
 import { subDays } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { CategoryService } from 'src/category/category.service';
+import { AwsService } from 'src/aws/aws.service';
+import { UtilsService } from 'src/utils/utils.service';
+import { ImageResponseDto } from './dto/image.dto';
 
 @Injectable()
 export class BoardService {
@@ -13,6 +16,8 @@ export class BoardService {
         @InjectRepository(Board) private readonly boardRepository: Repository<Board>,
         @InjectRepository(ViewBoardList) private readonly viewBoardListRepository: Repository<ViewBoardList>,
         private readonly categoryService: CategoryService,
+        private readonly awsService: AwsService,
+        private readonly utilsService: UtilsService,
         private readonly configService: ConfigService,
     ) {}
     private readonly logger: Logger = new Logger(BoardService.name);
@@ -162,6 +167,19 @@ export class BoardService {
             this.logger.error('deleteBoard()');
             throw err;
         }
+    }
+      
+    async imageUpload(file: Express.Multer.File): Promise<ImageResponseDto> {
+        const imageName = this.utilsService.getUUID();
+        const ext = file.originalname.split('.').pop();
+        
+        const imageUrl = await this.awsService.imageUploadToS3(
+            `${imageName}.${ext}`,
+            file,
+            ext,
+        );
+        
+        return { imageUrl };
     }
 
     /** 게시글의 변경 권한을 확인 후 해당 게시글을 반환합니다. */

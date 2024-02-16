@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BoardController } from '../board/board.controller';
 import { BoardService } from './board.service';
 import { ForbiddenException } from '@nestjs/common';
+import { Readable } from 'stream';
 
 describe('BoardController', () => {
   let controller: BoardController;
@@ -47,6 +48,9 @@ describe('BoardController', () => {
       return Promise.resolve({ ...board, ...dto, updatedate: new Date() });
     }),
     deleteBoard: jest.fn(),
+    imageUpload: jest.fn().mockImplementation((file) => {
+      return { imageUrl: 'url' };
+    })
   };
 
   const req = { user: { userId: 1 }};
@@ -119,6 +123,27 @@ describe('BoardController', () => {
         });
 
       expect(mockBoardService.postBoard).toHaveBeenCalledWith(dto, userId);
+    });
+  });
+
+  describe('postSaveImage Test', () => {
+    const file: Express.Multer.File = {
+      originalname: 'file.csv',
+      mimetype: 'text/csv',
+      path: 'something',
+      buffer: Buffer.from('one,two,three'),
+      fieldname: '',
+      encoding: '',
+      size: 0,
+      stream: new Readable,
+      destination: '',
+      filename: ''
+    };
+
+    it('업로드 한 이미지의 URI를 반환하는가?', async () => {
+      const result = await controller.postSaveImage(file);
+      expect(result).toEqual({ imageUrl: 'url' });
+      expect(mockBoardService.imageUpload).toHaveBeenCalledTimes(1);
     });
   });
 
