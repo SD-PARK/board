@@ -57,7 +57,7 @@ describe('UserController', () => {
   });
 
   describe('getUserAll Test', () => {
-    it('유저 목록을 읽어와 반환하는가?', () => {
+    it('User 목록을 읽어와 반환하는가?', () => {
       expect(controller.getUserAll())
         .resolves.toEqual(
           mockUsers.map(user => {
@@ -70,7 +70,7 @@ describe('UserController', () => {
   });
 
   describe('postSignUp Test', () => {
-    it('새 유저를 생성하고 반환하는가?', () => {
+    it('새 User를 생성하고 반환하는가?', () => {
       const dto = {
         email: 'test@test.com',
         password: 'test',
@@ -96,7 +96,7 @@ describe('UserController', () => {
       name: 'name',
     }
 
-    it('유저 정보가 변경되는가?', () => {
+    it('User 정보가 변경되는가?', () => {
       expect(controller.patchUser(req, dto))
         .resolves.toEqual({
           userId: req.user.userId,
@@ -109,7 +109,7 @@ describe('UserController', () => {
       expect(mockUserService.patchUser).toHaveBeenCalledWith(req.user.userId, dto);
     });
     
-    it('유저 ID의 유효성을 검사하는가?', () => {
+    it('User ID의 유효성을 검사하는가?', () => {
       expect(controller.patchUser(failedReq, dto))
         .rejects.toThrow(new NotFoundException());
     });
