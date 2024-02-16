@@ -28,6 +28,7 @@ describe('UserService', () => {
       ...user,
       regdate: new Date(),
     })),
+    softDelete: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -167,6 +168,21 @@ describe('UserService', () => {
         ...mockUsers[id-1],
         ...dto,
       });
+    });
+  });
+
+  describe('deleteUser Test', () => {
+    const userId = 1;
+
+    it('ID의 유효성을 검사하는가?', async () => {
+      jest.spyOn(service, 'getUserId');
+      await service.deleteUser(userId);
+      expect(service.getUserId).toHaveBeenCalledWith(userId);
+    });
+
+    it('Soft-Delete가 진행되는가?', async () => {
+      await service.deleteUser(userId);
+      expect(mockUserRepository.softDelete).toHaveBeenCalledWith(userId);      
     });
   });
 

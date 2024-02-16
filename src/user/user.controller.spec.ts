@@ -38,6 +38,8 @@ describe('UserController', () => {
         return Promise.resolve(result);
       }
     }),
+
+    deleteUser: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -114,4 +116,12 @@ describe('UserController', () => {
         .rejects.toThrow(new NotFoundException());
     });
   })
+
+  describe('deleteUser Test', () => {
+    const req = { user: { userId: 1 }};
+    it('User 레코드 삭제가 진행되는가?', async () => {
+      await controller.deleteUser(req);
+      expect(mockUserService.deleteUser).toHaveBeenCalledWith(req.user.userId);
+    });
+  });
 });
