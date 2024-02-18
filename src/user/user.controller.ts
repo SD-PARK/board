@@ -32,10 +32,10 @@ export class UserController {
     }
 
     @Patch()
-    @ApiOperation({ summary: '유저 정보 수정 API', description: '유저 정보를 수정한다.' })
+    @ApiOperation({ summary: '유저 정보 변경 API', description: '유저 정보를 변경한다.' })
     @ApiBearerAuth('access-token')
     @ApiBody({ type: UpdateUserDto })
-    @ApiResponse({ status: 200, description: '수정된 유저 정보', type: User })
+    @ApiResponse({ status: 200, description: '변경된 유저 정보', type: User })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @ApiResponse({ status: 404, description: '유저 ID가 유효하지 않음' })
     @UseGuards(JwtAuthGuard)
