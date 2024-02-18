@@ -46,7 +46,6 @@ export class UserController {
     @Delete()
     @ApiOperation({ summary: '유저 삭제 API', description: '유저를 삭제한다.' })
     @ApiBearerAuth('access-token')
-    @ApiParam({ name: 'id', description: '유저 ID', example: '1', required: true })
     @ApiResponse({ status: 200, description: '삭제 완료' })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @ApiResponse({ status: 404, description: '유저 ID가 유효하지 않음' })
