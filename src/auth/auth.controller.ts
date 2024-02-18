@@ -25,7 +25,6 @@ export class AuthController {
     @Post('refresh')
     @ApiOperation({ summary: '토큰 재발급 API', description: 'Access Token을 재발급한다.' })
     @ApiCookieAuth('access_token')
-    @ApiResponse({ type: LoginResult })
     @ApiResponse({ status: 201, description: 'AccessToken을 반환한다.', type: LoginResult })
     @ApiResponse({ status: 401, description: '토큰이 유효하지 않음' })
     @UseGuards(RefreshAuthGuard)
