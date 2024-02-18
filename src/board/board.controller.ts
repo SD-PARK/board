@@ -20,7 +20,7 @@ export class BoardController {
     @ApiQuery({ name: 'category', description: '카테고리', example: '공지사항', required: false })
     @ApiQuery({ name: 'sort', description: '정렬 기준', example: 'view || view7d || view30d || view365d', required: false })
     @ApiQuery({ name: 'page', description: '페이지', example: '1', required: false })
-    @ApiResponse({ status: 200, description: '조회된 게시글 목록', type: Array<ViewBoardList> })
+    @ApiResponse({ status: 200, description: '조회된 게시글 목록', type: ViewBoardList, isArray: true })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @UseGuards(JwtAuthGuard)
     async getBoardList(

@@ -14,7 +14,7 @@ export class ReplyController {
     @ApiOperation({ summary: '댓글 조회 API', description: '게시글의 댓글을 조회한다.' })
     @ApiBearerAuth('access-token')
     @ApiParam({ name: 'id', description: '게시글 ID', example: '1', required: true })
-    @ApiResponse({ status: 200, description: '조회된 댓글', type: Array<ViewReply> })
+    @ApiResponse({ status: 200, description: '조회된 댓글', type: ViewReply, isArray: true })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @UseGuards(JwtAuthGuard)
     async getBoardReply(@Param('id') boardId: number): Promise<ViewReply[]> {

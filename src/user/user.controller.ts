@@ -13,7 +13,7 @@ export class UserController {
     @Get()
     @ApiOperation({ summary: '유저 조회 API', description: '유저를 조회한다.' })
     @ApiBearerAuth('access-token')
-    @ApiResponse({ status: 200, description: '조회된 유저 정보', type: Array<User> })
+    @ApiResponse({ status: 200, description: '조회된 유저 정보', type: User, isArray: true })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @UseGuards(JwtAuthGuard)
     async getUserAll(): Promise<User[]> {
