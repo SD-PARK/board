@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 export function setupSwagger(app: INestApplication): void {
     const options = new DocumentBuilder()
         .setTitle('게시판 API 문서')
-        .setDescription('게시판 API 설명')
+        // .setDescription('')
         .setVersion('1.0.0')
         .build();
 
