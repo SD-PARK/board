@@ -89,7 +89,7 @@ export class ReplyService {
     /** ReplyDto의 Board ID와 Category ID가 유효한 지 검증합니다. */
     async validateDto(replyDto: CreateReplyDto | UpdateReplyDto): Promise<void> {
         if (!(await this.boardService.validateBoard(replyDto.boardId)))
-            throw new BadRequestException('게시글 ID가 유효하지 않습니다');
+            throw new BadRequestException('게시글 ID가 유효하지 않습니다.');
         if (replyDto?.parentId && !(await this.validateReply(replyDto.parentId)))
             throw new BadRequestException('부모 댓글의 ID가 유효하지 않습니다.');
     }
