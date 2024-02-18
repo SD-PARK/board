@@ -23,8 +23,8 @@ export class BoardService {
     private readonly logger: Logger = new Logger(BoardService.name);
 
     async getBoardList(boardFilterDto: BoardFilterDto): Promise<ViewBoardList[]> {
-        const TARGET_KEY: string[] = this.configService.get('BOARD_TARGET_KEY');
-        const PAGE_SIZE: number = this.configService.get('BOARD_PAGE_SIZE');
+        const TARGET_KEY: string[] = ['title', 'writer'];
+        const PAGE_SIZE: number = 10;
 
         const { target, keyword, category, sort, page } = boardFilterDto;
         
