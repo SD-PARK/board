@@ -13,7 +13,7 @@ export class UserController {
     @Get()
     @ApiOperation({ summary: '유저 조회 API', description: '유저를 조회한다.' })
     @ApiBearerAuth('access-token')
-    @ApiResponse({ status: 200, description: '조회된 유저', type: Array<User> })
+    @ApiResponse({ status: 200, description: '조회된 유저 정보', type: Array<User> })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @UseGuards(JwtAuthGuard)
     async getUserAll(): Promise<User[]> {
@@ -24,7 +24,7 @@ export class UserController {
     @ApiOperation({ summary: '유저 생성 API', description: '유저를 생성한다.' })
     @ApiBearerAuth('access-token')
     @ApiBody({ type: CreateUserDto })
-    @ApiResponse({ status: 201, description: '생성된 유저', type: User })
+    @ApiResponse({ status: 201, description: '생성된 유저 정보', type: User })
     @ApiResponse({ status: 401, description: '권한 없음' })
     @ApiResponse({ status: 409, description: '이미 존재하는 계정' })
     async postSignUp(@Body() userDto: CreateUserDto): Promise<User> {
