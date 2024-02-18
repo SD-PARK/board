@@ -70,7 +70,9 @@ export class ReplyService {
     async verifyUserOwnership(replyId: number, userId: number): Promise<Reply> {
         const col: Reply = await this.replyRepository.findOne({ where: { replyId: replyId }});
 
-        if (col.userId !== userId)
+        if (!col)
+            throw new NotFoundException('존재하지 않는 댓글입니다.');
+        else if (col.userId !== userId)
             throw new ForbiddenException('권한이 없습니다');
         else
             return col;
